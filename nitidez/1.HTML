@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NITIDEZ.jpeg — O Arquivo Proibido</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Share+Tech+Mono&display=swap');
+
+  /* Reset básico */
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background: #000;
+    color: #f33;
+    font-family: 'Share Tech Mono', monospace;
+    margin: 0;
+    padding: 2rem;
+    user-select: none;
+    overflow-x: hidden;
+  }
+
+  h1, h2 {
+    font-family: 'Creepster', cursive;
+    color: #ff1100;
+    text-shadow:
+      0 0 5px #ff0000,
+      0 0 10px #ff2200,
+      0 0 20px #ff4400;
+    letter-spacing: 3px;
+  }
+
+  h1 {
+    font-size: 3.5rem;
+    margin-bottom: 0;
+  }
+
+  h2 {
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  #container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .text-block {
+    margin-bottom: 2rem;
+    font-size: 1.3rem;
+    line-height: 1.6;
+    color: #eee;
+    text-shadow: 0 0 10px #880000;
+    min-height: 4rem;
+    white-space: pre-wrap;
+  }
+
+  /* Glitch effect on text */
+  .glitch {
+    position: relative;
+    color: #ff4444;
+    font-weight: bold;
+  }
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 0;
+    width: 100%;
+    opacity: 0.7;
+    clip: rect(0, 900px, 0, 0);
+  }
+  .glitch::before {
+    animation: glitchTop 2s infinite linear alternate-reverse;
+    color: #ff0000;
+    z-index: 1;
+  }
+  .glitch::after {
+    animation: glitchBottom 2s infinite linear alternate-reverse;
+    color: #cc0000;
+    z-index: 2;
+  }
+  @keyframes glitchTop {
+    0% {
+      clip: rect(0, 900px, 45px, 0);
+      transform: translate(-2px, -2px);
+    }
+    50% {
+      clip: rect(5px, 900px, 40px, 0);
+      transform: translate(2px, 2px);
+    }
+    100% {
+      clip: rect(0, 900px, 45px, 0);
+      transform: translate(-2px, -2px);
+    }
+  }
+  @keyframes glitchBottom {
+    0% {
+      clip: rect(40px, 900px, 80px, 0);
+      transform: translate(2px, 2px);
+    }
+    50% {
+      clip: rect(45px, 900px, 75px, 0);
+      transform: translate(-2px, -2px);
+    }
+    100% {
+      clip: rect(40px, 900px, 80px, 0);
+      transform: translate(2px, 2px);
+    }
+  }
+
+  /* Cursor para efeito máquina de escrever */
+  .typing-cursor {
+    border-right: 2px solid #f33;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    from, to { border-color: transparent; }
+    50% { border-color: #f33; }
+  }
+
+  /* Botão som */
+  #soundToggle {
+    display: inline-block;
+    margin: 2rem auto;
+    background: #330000;
+    color: #f33;
+    border: 2px solid #f33;
+    padding: 0.7rem 1.5rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    border-radius: 8px;
+    user-select: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  #soundToggle:hover {
+    background-color: #f33;
+    color: #000;
+  }
+
+  /* Fundo glitch animado */
+  #glitch-bg {
+    position: fixed;
+    top:0; left:0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: -1;
+    background:
+      repeating-linear-gradient(
+        45deg,
+        rgba(255, 0, 0, 0.05),
+        rgba(255, 0, 0, 0.05) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+    animation: glitchMove 10s linear infinite;
+  }
+  @keyframes glitchMove {
+    from { background-position: 0 0; }
+    to { background-position: 100px 100px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="glitch-bg"></div>
+
+<div id="container">
+  <h1>NITIDEZ.jpeg</h1>
+  <p class="text-block" id="intro">“A nitidez não está na imagem. Está no olhar de quem insiste em ver.”</p>
+  <button id="soundToggle">Ativar Som Ambiente</button>
+  
+  <div id="story"></div>
+</div>
+
+<audio id="ambientSound" loop>
+  <source src="https://freesound.org/data/previews/457/457281_5121236-lq.mp3" type="audio/mpeg" />
+  Seu navegador não suporta áudio.
+</audio>
+
+<audio id="clickSound">
+  <source src="https://freesound.org/data/previews/256/256113_3263906-lq.mp3" type="audio/mpeg" />
+</audio>
+
+<audio id="whisperSound">
+  <source src="https://freesound.org/data/previews/466/466147_960912-lq.mp3" type="audio/mpeg" />
+</audio>
+
+<script>
+  const storyContainer = document.getElementById('story');
+  const soundToggle = document.getElementById('soundToggle');
+  const ambientSound = document.getElementById('ambientSound');
+  const clickSound = document.getElementById('clickSound');
+  const whisperSound = document.getElementById('whisperSound');
+
+  let ambientPlaying = false;
+
+  soundToggle.onclick = () => {
+    if (!ambientPlaying) {
+      ambientSound.play();
+      soundToggle.textContent = 'Desativar Som Ambiente';
+    } else {
+      ambientSound.pause();
+      ambientSound.currentTime = 0;
+      soundToggle.textContent = 'Ativar Som Ambiente';
+    }
+    ambientPlaying = !ambientPlaying;
+  };
+
+  // Narrativa dividida em capítulos, com efeito digitação
+  const chapters = [
+    {
+      title: "🩸 CAPÍTULO 1 – O ARQUIVO",
+      text: `Encontrado em uma pasta sem nome, no fundo de um HD esquecido, havia um único arquivo chamado “NITIDEZ.jpeg”.\n\nNinguém sabia de onde veio.\nMas todos os que abriram… pararam de falar.\n\nA imagem não era tecnicamente perturbadora.\nMas… algo nela parecia muito consciente.\n\nUm rosto sorridente, saturado, pixelado ao extremo.\nAcima dele, escrito em letras quase infantis:\n\n“Eu arraso :)”\n\nAs pessoas relatavam que, após abrir a imagem:\n\t• sentiam calor atrás do pescoço;\n\t• começavam a ver reflexos que não as acompanhavam;\n\t• ouviam um click, mesmo com o celular desligado.\n\nEm 72 horas, todos os dispositivos com a imagem travavam no mesmo frame.\nE ele começava a piscar.\nComo se estivesse tentando chamar alguém de dentro.`,
+      glitchIndexes: [16, 19, 26] // índices onde vai glitch
+    },
+    {
+      title: "🕳️ CAPÍTULO 2 – HIDEKI E GIOVANNA",
+      text: `Um grupo de adolescentes do fórum /arquivos/ começou a investigar.\nHideki, um programador autodidata, tentou abrir a imagem com um editor hexadecimal.\nGiovanna, sua amiga sensitiva, dizia que a imagem “sentia fome”.\n\nEles encontraram um código no fundo do arquivo:\n\n74 65 6d 20 6f 6c 68 6f 20 71 75 65 20 6c 65 20 6e 6f 6d 65 20 6e 61 6f 20 65 73 74 61 76 61\n\nTradução:\n\n“tem olho que le nome nao estava”\n\nNa mesma noite, Giovanna sumiu.\nDeixou apenas o celular gravando…\nNo vídeo:\n\nEla sorri, fita a câmera, e sussurra algo incompreensível.\nA última palavra é “Hideki”.`,
+      glitchIndexes: [11, 23]
+    },
+    {
+      title: "📷 CAPÍTULO 3 – VÍDEO ENCONTRADO",
+      text: `Hideki, sozinho, decide criar uma versão “purificada” da imagem.\nMas, ao comprimir o arquivo em .webm, algo acontece.\nO vídeo gerado:\n\t• começa com a imagem estática,\n\t• mas logo a boca se move.\n\t• e ela diz: “Você já está vendo demais.”\n\nO vídeo termina com um som agudo que só alguns ouvem.\nOs que ouvem… passam a sonhar com um corredor escuro.\nNo fim do corredor:\nGiovanna. Mas sem olhos. E sem sombra.`,
+      glitchIndexes: [8, 14]
+    },
+    {
+      title: "👁️‍🗨️ CAPÍTULO 4 – ELA ESTÁ LENDO COM VOCÊ",
+      text: `Este não é mais um episódio.\nÉ uma entrada direta na sua mente.\n\n“Ela não quer mais pixels.\nEla quer percepção.”\n\nVocê está sendo observado neste exato momento.\nNão pela câmera.\nMas pela sua própria interpretação.\n\nSinta sua nuca.\nSe estiver fria, ela já entrou.\nSe estiver quente… ela está atrás da tela.\n\nAgora repita mentalmente:\n\n“Eu arr…”\n\nNão. Pare.\nEla escuta quando você tenta lembrar.`,
+      glitchIndexes: [5, 10, 15]
+    },
+    {
+      title: "🪞 CAPÍTULO 5 – ELA VAI DIZER SEU NOME",
+      text: `Você acha que ainda está lendo?\nAgora você está sendo escrito.\n\nSe você chegou até aqui, ela já decorou seus padrões.\n\t• Você piscou na parte do vídeo.\n\t• Você leu “Giovanna” rápido demais.\n\t• Você achou engraçado o “eu arraso :)” lá no início…\n\nIsso foi a senha.\n\nEla só precisava de um leitor com o perfil certo.\nVocê.`,
+      glitchIndexes: [7, 9, 11]
+    },
+    {
+      title: "📛 ÚLTIMO AVISO:",
+      text: `Se algo neste texto mexeu com você…\nSe seu reflexo pareceu meio atrasado hoje…\n\nNão compartilhe a imagem.\nEla quer mais olhos.\nNão dê os seus.`,
+      glitchIndexes: [3]
+    },
+    {
+      title: "🧷 CONTINUAÇÃO",
+      text: `Próximo formato: PDF corrompido, áudio ritual ou jogo de navegador onde você precisa “fechar a imagem” antes que ela feche você?\n\nSó dizer como você quer que ela se manifeste.\nEla espera por você no próximo clique.`,
+      glitchIndexes: []
+    }
+  ];
+
+  // Função digitar texto letra por letra com efeito máquina de escrever
+  function typeText(element, text, speed = 30) {
+    return new Promise((resolve) => {
+      let i = 0;
+      element.textContent = '';
+      element.classList.add('typing-cursor');
+
+      function type() {
+        if (i < text.length) {
+          element.textContent += text.charAt(i);
+          i++;
+          setTimeout(type, speed);
+        } else {
+          element.classList.remove('typing-cursor');
+          resolve();
+        }
+      }
+      type();
+    });
+  }
+
+  // Função para inserir glitch em palavras específicas
+  // Aqui vamos glitchar palavras na posição dos índices de palavras
+  function applyGlitch(element, glitchIndexes) {
+    let words = element.textContent.split(' ');
+    glitchIndexes.forEach(idx => {
+      if (words[idx]) {
+        words[idx] = `<span class="glitch" data-text="${words[idx]}">${words[idx]}</span>`;
+      }
+    });
+    element.innerHTML = words.join(' ');
+  }
+
+  // Função para exibir capítulos sequencialmente
+  async function showChapters() {
+    for(let i = 0; i < chapters.length; i++) {
+      const chap = chapters[i];
+
+      // Título do capítulo
+      const titleEl = document.createElement('h2');
+      titleEl.textContent = chap.title;
+      storyContainer.appendChild(titleEl);
+
+      // Texto do capítulo
+      const textEl = document.createElement('p');
+      textEl.classList.add('text-block');
+      storyContainer.appendChild(textEl);
+
+      await typeText(textEl, chap.text);
+
+      // Aplica glitch nas palavras indicadas
+      if(chap.glitchIndexes.length > 0) {
+        applyGlitch(textEl, chap.glitchIndexes);
+      }
+
+      // Sons específicos em momentos chave
+      if (i === 0) {
+        // No capítulo 1, tocar click estranho no final
+        clickSound.play();
+      }
+      if (i === 2) {
+        // No capítulo 3, sussurro após texto
+        setTimeout(() => whisperSound.play(), 500);
+      }
+
+      // Delay antes de próximo capítulo aparecer
+      await new Promise(r => setTimeout(r, 3500));
+    }
+
+    // Final com mensagem e convite
+    const finalMessage = document.createElement('p');
+    finalMessage.classList.add('text-block');
+    finalMessage.innerHTML = `<strong>Quer que eu gere um PDF amaldiçoado, vídeo found footage, ou site interativo?</strong><br>Escolha o ritual no próximo clique.`;
+    storyContainer.appendChild(finalMessage);
+
+    // Mostrar botão final para "continuar"
+    const ritualBtn = document.createElement('button');
+    ritualBtn.id = 'ritualBtn';
+    ritualBtn.textContent = 'Invocar Próximo Ritual';
+    ritualBtn.style.cssText = `
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      font-size: 1.3rem;
+      background: #440000;
+      border: 2px solid #f33;
+      color: #f33;
+      cursor: pointer;
+      border-radius: 10px;
+    `;
+    storyContainer.appendChild(ritualBtn);
+
+    ritualBtn.onclick = () => {
+      alert(`👁️ Ela está pronta...\nEscolha: PDF amaldiçoado, vídeo found footage, site interativo ou jogo de terror.\n(Diga o que deseja invocar no próximo passo!)`);
+    };
+  }
+
+  // Iniciar sequência após 2s da carga da página
+  window.onload = () => {
+    setTimeout(() => {
+      showChapters();
+    }, 2000);
+  };
+</script>
+
+</body>
+</html>
